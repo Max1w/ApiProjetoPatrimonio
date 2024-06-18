@@ -50,7 +50,7 @@ namespace Patrimonio.Controllers
 		[FromBody] PatrimonioItens model)
 		{
 			if (!ModelState.IsValid)
-				return BadRequest();
+				return BadRequest(model);
 
 			var itens = new PatrimonioItens()
 			{
