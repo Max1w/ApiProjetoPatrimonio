@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Patrimonio.Data;
 using Patrimonio.Modelos;
 
@@ -148,7 +149,7 @@ namespace Patrimonio.Controllers
 			}
 			catch (Exception ex)
 			{
-				return BadRequest();
+				return BadRequest(ex.Message);
 			}
 		}
 
@@ -157,6 +158,7 @@ namespace Patrimonio.Controllers
 		[FromServices] ApiContexto contexto,
 		[FromRoute] int id)
 		{
+
 			var itens = await contexto
 				.Itens
 				.FirstOrDefaultAsync(x => x.Id == id);
@@ -170,6 +172,42 @@ namespace Patrimonio.Controllers
 			catch
 			{
 				return BadRequest();
+			}
+		}
+
+		[HttpDelete("TodosOsItens")]
+		public async Task<IActionResult> DeleteAsync(
+					[FromServices] ApiContexto contexto,
+					[FromBody] List<int> ids)
+		{
+			// Verifica se a lista de IDs é nula ou vazia
+			if (ids == null || ids.Count == 0)
+			{
+				return BadRequest("A lista de IDs não pode estar vazia.");
+			}
+
+			// Busca os itens que correspondem aos IDs fornecidos
+			var itens = await contexto.Itens
+				.Where(x => ids.Contains(x.Id))
+				.ToListAsync();
+
+			// Verifica se todos os itens foram encontrados
+			if (itens.Count != ids.Count)
+			{
+				return NotFound("Um ou mais itens não foram encontrados.");
+			}
+
+			try
+			{
+				// Remove todos os itens encontrados
+				contexto.Itens.RemoveRange(itens);
+				await contexto.SaveChangesAsync();
+				return Ok();
+			}
+			catch (Exception ex)
+			{
+				// Em caso de erro, retorna um status de BadRequest
+				return BadRequest(ex.Message);
 			}
 		}
 	}
