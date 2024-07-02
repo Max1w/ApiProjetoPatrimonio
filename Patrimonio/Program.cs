@@ -1,18 +1,21 @@
 using Microsoft.EntityFrameworkCore;
 using Patrimonio.Data;
+using System;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddDbContext<ApiContexto>(opt => opt.UseSqlServer("CursoMaxWillian"));
-
+builder.Services.AddDbContext<ApiContexto>(opt => opt.UseSqlServer("CursoMaxMillan"));
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddCors(options =>
+{
+	options.AddPolicy("AllowSpecificOrigin",
+		builder => builder.WithOrigins("https://localhost:44382")
+						  .AllowAnyHeader()
+						  .AllowAnyMethod());
+});
 builder.Services.AddSwaggerGen();
-
-builder.Services.AddDbContext<ApiContexto>();
 
 var app = builder.Build();
 
@@ -24,6 +27,11 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseRouting();
+
+// Ensure UseCors is called before UseAuthorization
+app.UseCors("AllowSpecificOrigin");
 
 app.UseAuthorization();
 
