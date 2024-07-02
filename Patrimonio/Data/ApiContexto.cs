@@ -5,12 +5,7 @@ namespace Patrimonio.Data
 {
 	public class ApiContexto : DbContext
 	{
-		public DbSet<Item> Itens { get; set; }
-		public DbSet<Aquisicao> Aquisicoes { get; set; }
-		public DbSet<Depreciacao> Depreciacoes { get; set; }
-		public DbSet<Localizacao> Localizacoes { get; set; }
-		public DbSet<Veiculo> Veiculos { get; set; }
-		public DbSet<HistoricoSaida> HistoricoSaidas { get; set; }
+		public DbSet<PatrimonioItens> Itens { get; set; }
 
 		private IConfiguration _configuration;
 
