@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Cors;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Patrimonio.Data;
@@ -20,7 +19,6 @@ namespace Patrimonio.Controllers
 
 		[HttpGet]
 		[Route("TodosOsItens")]
-		[EnableCors("AllowSpecificOrigin")]
 		public async Task<IActionResult> GetAsync(
 			[FromServices] ApiContexto context)
 		{
@@ -33,19 +31,19 @@ namespace Patrimonio.Controllers
 
 		[HttpGet]
 		[Route("TodosOsItens/{id}")]
-		[EnableCors("AllowSpecificOrigin")]
 		public async Task<IActionResult> GetByIdAsync(
-		[FromServices] ApiContexto context,
-		[FromRoute] int id)
+			[FromServices] ApiContexto context,
+			[FromRoute] int id)
 		{
-			var item = await context
+			var Itens = await context
 				.Itens
 				.AsNoTracking()
 				.FirstOrDefaultAsync(x => x.Id == id);
 
-			return item == null ? NotFound() : Ok(item);
+			return Itens == null
+				? NotFound()
+				: Ok(Itens);
 		}
-
 
 		[HttpPost("TodosOsItens")]
 		public async Task<IActionResult> PostAsync(
