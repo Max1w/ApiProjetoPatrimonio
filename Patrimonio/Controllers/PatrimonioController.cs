@@ -27,7 +27,7 @@ namespace Patrimonio.Controllers
 				.AsNoTracking()
 				.ToListAsync();
 			return Ok(Itens);
-		}
+		} 
 
 		[HttpGet]
 		[Route("TodosOsItens/{id}")]
